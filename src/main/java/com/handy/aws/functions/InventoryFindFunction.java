@@ -14,15 +14,17 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
 public class InventoryFindFunction implements RequestHandler<String, String> {
 
+	public static final String BUCKET_NAME = "handy-inventory-data-20200504";
+	public static final String KEY_NAME = "s3testdata.txt"; 
+
     @Override
     public String handleRequest(String input, Context context) {
         context.getLogger().log("Input: " + input);
 
-        Region region = Region.EU_WEST_2;
-		S3Client s3client = S3Client.builder().region(region).build();
+        S3Client s3client = getS3Client();
 		GetObjectRequest request = GetObjectRequest.builder()
-				.bucket("handy-inventory-data-20200504")
-				.key("s3testdata.txt")
+				.bucket(BUCKET_NAME)
+				.key(KEY_NAME)
 				.build();
 
 		String outputString;
@@ -39,5 +41,11 @@ public class InventoryFindFunction implements RequestHandler<String, String> {
 
         return outputString;
     }
+
+	protected S3Client getS3Client() {
+		return S3Client.builder()
+				.region(Region.EU_WEST_2)
+				.build();
+	}
 
 }

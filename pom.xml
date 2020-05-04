@@ -84,5 +84,13 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.adobe.testing/s3mock-junit4 -->
+		<dependency>
+		    <groupId>com.adobe.testing</groupId>
+		    <artifactId>s3mock-junit4</artifactId>
+		    <version>2.1.19</version>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
