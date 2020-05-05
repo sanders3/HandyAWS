@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -31,12 +32,11 @@ public class InventoryFindFunctionTest {
 	@ClassRule
 	public static final S3MockRule s3mock = S3MockRule.builder().build();
 
-	private static String input;
+	private static QueryStringRequest input = new QueryStringRequest();
 
 	@BeforeClass
 	public static void createInput() throws IOException {
-		// TODO: set up your sample input object here.
-		input = "dummy";
+		input.setParameters(Collections.singletonMap("id", "102"));
 	}
 
 	final File uploadFile = new File("src/test/resources", KEY_NAME);
