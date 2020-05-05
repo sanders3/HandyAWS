@@ -2,6 +2,8 @@ package com.handy.aws.functions;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Product {
 
@@ -100,8 +102,12 @@ public class Product {
 	
 	@Override
 	public String toString() {
-		return "Product ["
-				+ "id=" + id + ", toolType=" + toolType + ", brand=" + brand + ", name=" + name + ", count=" + count 
-				+ "]";
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+				.append("id", id)
+				.append("toolType", toolType)
+				.append("brand", brand)
+				.append("name", name)
+				.append("count", count)
+				.build();
 	}
 }
