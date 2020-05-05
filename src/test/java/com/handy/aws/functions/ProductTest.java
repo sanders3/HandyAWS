@@ -1,8 +1,8 @@
 package com.handy.aws.functions;
 
-import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
+import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
 import org.junit.Test;
 

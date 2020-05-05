@@ -15,7 +15,7 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 public class InventoryFindFunction implements RequestHandler<Object, String> {
 
 	public static final String BUCKET_NAME = "handy-inventory-data-20200504";
-	public static final String KEY_NAME = "s3testdata.txt"; 
+	public static final String KEY_NAME = "handy-tool-catalog.json"; 
 
     @Override
     public String handleRequest(Object input, Context context) {

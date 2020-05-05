@@ -3,10 +3,13 @@ package com.handy.aws.functions;
 import static com.handy.aws.functions.InventoryFindFunction.BUCKET_NAME;
 import static com.handy.aws.functions.InventoryFindFunction.KEY_NAME;
 
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -69,6 +72,6 @@ public class InventoryFindFunctionTest {
 		String output = handler.handleRequest(input, ctx);
 
 		// TODO: validate output here if needed.
-		Assert.assertEquals("Data in S3 bucket. All mimsy were the borogoves.", output);
+		assertThat(output, startsWith("["));
 	}
 }
