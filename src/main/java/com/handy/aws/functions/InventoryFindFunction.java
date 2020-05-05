@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.google.gson.Gson;
 
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.regions.Region;
@@ -27,19 +28,18 @@ public class InventoryFindFunction implements RequestHandler<Object, String> {
 				.key(KEY_NAME)
 				.build();
 
-		String outputString;
 		try (
 				ResponseInputStream<?> objectData = s3client.getObject(request);
 				InputStreamReader isr = new InputStreamReader(objectData);
 				BufferedReader br = new BufferedReader(isr)) {
-			
-			outputString = br.readLine();
-		} catch (IOException e) {
-			context.getLogger().log("Error reading for s3testdata.txt " + e);
-			outputString = null;
-		}
 
-        return outputString;
+			Gson gson = new Gson();
+			Product[] products = gson.fromJson(br, Product[].class);
+
+			return products[0].toString();
+		} catch (IOException e) {
+			return null;
+		}
     }
 
 	protected S3Client getS3Client() {
