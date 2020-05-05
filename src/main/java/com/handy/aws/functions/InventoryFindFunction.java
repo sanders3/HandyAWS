@@ -12,13 +12,13 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
-public class InventoryFindFunction implements RequestHandler<String, String> {
+public class InventoryFindFunction implements RequestHandler<Object, String> {
 
 	public static final String BUCKET_NAME = "handy-inventory-data-20200504";
 	public static final String KEY_NAME = "s3testdata.txt"; 
 
     @Override
-    public String handleRequest(String input, Context context) {
+    public String handleRequest(Object input, Context context) {
         context.getLogger().log("Input: " + input);
 
         S3Client s3client = getS3Client();

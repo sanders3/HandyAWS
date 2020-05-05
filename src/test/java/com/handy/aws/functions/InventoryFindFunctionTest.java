@@ -27,7 +27,7 @@ public class InventoryFindFunctionTest {
 
 
 	@ClassRule
-	public static final S3MockRule s3mock = S3MockRule.builder().silent().build();
+	public static final S3MockRule s3mock = S3MockRule.builder().build();
 
 	private static String input;
 
