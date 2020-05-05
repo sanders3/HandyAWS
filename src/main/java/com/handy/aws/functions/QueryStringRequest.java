@@ -10,20 +10,20 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 public class QueryStringRequest {
 
 	// TODO: this will not cope with repeated query parameters
-	private Map<String, String> parameters;
+	private Map<String, String> queryStringParameters;
 
-	public Map<String, String> getParameters() {
-		return parameters;
+	public Map<String, String> getQueryStringParameters() {
+		return queryStringParameters;
 	}
 
-	public void setParameters(Map<String, String> parameters) {
-		this.parameters = parameters;
+	public void setQueryStringParameters(Map<String, String> queryStringParameters) {
+		this.queryStringParameters = queryStringParameters;
 	}
 
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder()
-				.append(this.parameters)
+				.append(this.queryStringParameters)
 				.toHashCode();
 	}
 
@@ -43,13 +43,13 @@ public class QueryStringRequest {
 
 		QueryStringRequest other = (QueryStringRequest) obj;
 		return new EqualsBuilder()
-				.append(this.parameters, other.parameters)
+				.append(this.queryStringParameters, other.queryStringParameters)
 				.isEquals();
 	}
 	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("parameters", parameters)
+				.append("queryStringParameters", queryStringParameters)
 				.build();
 	}}

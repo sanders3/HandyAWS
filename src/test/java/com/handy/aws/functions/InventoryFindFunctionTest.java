@@ -36,7 +36,7 @@ public class InventoryFindFunctionTest {
 
 	@BeforeClass
 	public static void createInput() throws IOException {
-		input.setParameters(Collections.singletonMap("id", "102"));
+		input.setQueryStringParameters(Collections.singletonMap("id", "102"));
 	}
 
 	final File uploadFile = new File("src/test/resources", KEY_NAME);

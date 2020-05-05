@@ -22,9 +22,9 @@ public class InventoryFindFunction implements RequestHandler<QueryStringRequest,
     public String handleRequest(QueryStringRequest input, Context context) {
         context.getLogger().log("Input: " + input);
 
-        String productIdString = input.getParameters().get("id");
+        String productIdString = input.getQueryStringParameters().get("id");
         int productId = Integer.parseInt(productIdString);
-        return getProductById(productId).toString();
+        return "" + getProductById(productId);
     }
 
 	private Product getProductById(int id) {
