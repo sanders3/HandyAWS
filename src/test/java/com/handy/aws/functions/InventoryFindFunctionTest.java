@@ -72,7 +72,7 @@ public class InventoryFindFunctionTest {
 		String output = handler.handleRequest(input, ctx);
 
 		// TODO: validate output here if needed.
-		assertThat(output, startsWith("Product[id=100"));
-		assertThat(output, endsWith(",count=20]"));
+		assertThat(output, startsWith("Product[id=102"));
+		assertThat(output, endsWith(",count=14]"));
 	}
 }

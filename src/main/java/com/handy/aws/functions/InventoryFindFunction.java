@@ -22,7 +22,11 @@ public class InventoryFindFunction implements RequestHandler<Object, String> {
     public String handleRequest(Object input, Context context) {
         context.getLogger().log("Input: " + input);
 
-        S3Client s3client = getS3Client();
+        return getProductById(102).toString();
+    }
+
+	private Product getProductById(int id) {
+		S3Client s3client = getS3Client();
 		GetObjectRequest request = GetObjectRequest.builder()
 				.bucket(BUCKET_NAME)
 				.key(KEY_NAME)
@@ -36,11 +40,17 @@ public class InventoryFindFunction implements RequestHandler<Object, String> {
 			Gson gson = new Gson();
 			Product[] products = gson.fromJson(br, Product[].class);
 
-			return products[0].toString();
+			for (Product product : products) {
+				if (id == product.getId()) {
+					return product;
+				}
+			}
 		} catch (IOException e) {
-			return null;
+			// do nothing
 		}
-    }
+
+		return null;
+	}
 
 	protected S3Client getS3Client() {
 		return S3Client.builder()
