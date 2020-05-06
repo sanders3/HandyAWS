@@ -3,6 +3,8 @@ package com.handy.aws.functions;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
+
 public class HttpProductResponse {
 
 	private String body;
@@ -15,9 +17,10 @@ public class HttpProductResponse {
 		this.headers.put("Content-Type", "application/json");
 	}
 
-	public HttpProductResponse(Product produce) {
+	public HttpProductResponse(Product product) {
 		this();
-		body = produce.toString();
+		Gson gson = new Gson();
+		body = gson.toJson(product);
 	}
 
 	public String getBody() {

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.adobe.testing.s3mock.junit4.S3MockRule;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.google.gson.Gson;
 
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
@@ -72,6 +73,8 @@ public class InventoryFindFunctionTest {
 
 		HttpProductResponse response = handler.handleRequest(input, ctx);
 
-		assertThat(response.getBody(), is(expectedProduct.toString()));
+		Gson gson = new Gson();
+		String expectedResponse = gson.toJson(expectedProduct);
+		assertThat(response.getBody(), is(expectedResponse));
 	}
 }
