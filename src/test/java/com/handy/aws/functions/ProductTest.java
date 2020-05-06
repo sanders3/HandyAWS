@@ -1,6 +1,7 @@
 package com.handy.aws.functions;
 
 import static org.hamcrest.CoreMatchers.is;
+import static pl.pojo.tester.api.assertion.Method.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
@@ -12,7 +13,9 @@ public class ProductTest {
 
 	@Test
 	public void pojoWellImplemented() {
-	    assertPojoMethodsFor(Product.class).areWellImplemented();
+	    assertPojoMethodsFor(Product.class)
+	    	.testing(EQUALS, HASH_CODE, GETTER, SETTER, CONSTRUCTOR)
+	    		.areWellImplemented();
 	}
 
 	private static final String JSON = "{" 

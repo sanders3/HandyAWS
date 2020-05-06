@@ -13,18 +13,18 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 
-public class InventoryFindFunction implements RequestHandler<QueryStringRequest, String> {
+public class InventoryFindFunction implements RequestHandler<QueryStringRequest, HttpProductResponse> {
 
 	public static final String BUCKET_NAME = "handy-inventory-data-20200504";
 	public static final String KEY_NAME = "handy-tool-catalog.json"; 
 
     @Override
-    public String handleRequest(QueryStringRequest input, Context context) {
+    public HttpProductResponse handleRequest(QueryStringRequest input, Context context) {
         context.getLogger().log("Input: " + input);
 
         String productIdString = input.getQueryStringParameters().get("id");
         int productId = Integer.parseInt(productIdString);
-        return "" + getProductById(productId);
+        return new HttpProductResponse(getProductById(productId));
     }
 
 	private Product getProductById(int id) {

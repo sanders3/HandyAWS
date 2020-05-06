@@ -3,8 +3,7 @@ package com.handy.aws.functions;
 import static com.handy.aws.functions.InventoryFindFunction.BUCKET_NAME;
 import static com.handy.aws.functions.InventoryFindFunction.KEY_NAME;
 
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
@@ -39,8 +38,10 @@ public class InventoryFindFunctionTest {
 		input.setQueryStringParameters(Collections.singletonMap("id", "102"));
 	}
 
-	final File uploadFile = new File("src/test/resources", KEY_NAME);
-	
+	private final File uploadFile = new File("src/test/resources", KEY_NAME);
+
+	private final Product expectedProduct = new Product(102, "Hammer", "DeWalt", "15oz MIG Weld", 14);
+
 	@Before
 	public void setupS3Client() {
 		S3Client s3client = s3mock.createS3ClientV2();
@@ -69,10 +70,8 @@ public class InventoryFindFunctionTest {
 
 		Context ctx = createContext();
 
-		String output = handler.handleRequest(input, ctx);
+		HttpProductResponse response = handler.handleRequest(input, ctx);
 
-		// TODO: validate output here if needed.
-		assertThat(output, startsWith("Product[id=102"));
-		assertThat(output, endsWith(",count=14]"));
+		assertThat(response.getBody(), is(expectedProduct.toString()));
 	}
 }
