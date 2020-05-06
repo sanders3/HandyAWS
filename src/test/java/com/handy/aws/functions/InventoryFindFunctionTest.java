@@ -21,15 +21,7 @@ import com.google.gson.Gson;
  * A simple test harness for locally invoking your Lambda function handler.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class InventoryFindFunctionTest {
-
-	private static Product product100 = new Product(100, "Hammer", "Stanley", "5oz Magnetic Tack Hammer", 20);
-	private static Product product101 = new Product(101, "Hammer", "Wilton Bash", "24oz Ball Peen", 27);
-	private static Product product102 = new Product(102, "Hammer", "DeWalt", "15oz MIG Weld", 14);
-	private static Product product103 = new Product(103, "Hammer", "Crescent", "18 oz Pry Bar Hammer", 32);
-	private static Product product104 = new Product(104,"Hammer", "DeWalt", "22 oz Mason Hammer", 7);
-
-	private static Product[] products = { product100, product101, product102, product103, product104 };
+public class InventoryFindFunctionTest extends TestHelper {
 
 	@Mock
 	private InventoryS3Client client;

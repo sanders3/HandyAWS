@@ -43,7 +43,7 @@ public class InventoryS3Client {
         return products;
 	}
 
-	protected ArrayList<Product> getAllProductsList() {
+	protected List<Product> getAllProductsList() {
 		return new ArrayList<Product>(Arrays.asList(getAllProducts()));
 	}	
 	
