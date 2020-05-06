@@ -4,14 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-
-import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -23,10 +24,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.google.gson.Gson;
 
+/**
+ * A simple test harness for locally invoking your Lambda function handler.
+ */
 @RunWith(MockitoJUnitRunner.class)
-public class InventoryInsertFunctionTest extends TestHelper {
+public class InventoryDeleteFunctionTest extends TestHelper {
 
 	private List<Product> productsList;
 
@@ -36,11 +39,11 @@ public class InventoryInsertFunctionTest extends TestHelper {
 	
     private HttpRequest request = new HttpRequest();
 
-    private InventoryInsertFunction handler;
+    private InventoryDeleteFunction handler;
 
 	@Before
 	public void setupClient() throws IOException {
-		handler = new InventoryInsertFunction(client);
+		handler = new InventoryDeleteFunction(client);
 
 		when(client.getAllProducts()).thenReturn(products);
 
@@ -54,43 +57,52 @@ public class InventoryInsertFunctionTest extends TestHelper {
         TestContext ctx = new TestContext();
 
         // TODO: customize your context here if needed.
-        ctx.setFunctionName("InventoryFindFunction");
+        ctx.setFunctionName("InventoryDeleteFunction");
 
         return ctx;
     }
 
     @Test
-    public void testInventoryInsertFunction() {
+    public void testInventoryDeleteFunction() {
         Context ctx = createContext();
 
-        Gson gson = new Gson();
-      
-        String newProductString = gson.toJson(newProduct105);
-		request.setBody(newProductString);
+		request.setPathParameters(Collections.singletonMap("id", "103"));
 
 		HttpProductResponse response = handler.handleRequest(request, ctx);
-        assertThat(response.getBody(), nullValue());
+
+		assertThat(response.getBody(), nullValue());
         assertThat(response.getStatusCode(), is("200"));
 
         verify(client).updateAllProducts(captor.capture());
         List<Product> updatedProducts = captor.getValue();
 
         assertThat(updatedProducts, 
-				contains(product100, product101, product102, product103, product104, newProduct105));
+				contains(product100, product101, product102, product104));
     }
 
     @Test
-    public void testInventoryInsertFunctionError() {
+    public void testInventoryDeleteFunctionNotFound() {
         Context ctx = createContext();
 
-        Gson gson = new Gson();
-      
-        String newProductString = gson.toJson(newProduct105);
-		request.setBody(newProductString);
+		request.setPathParameters(Collections.singletonMap("id", "99"));
 
+		HttpProductResponse response = handler.handleRequest(request, ctx);
+
+        assertThat(response.getBody(), nullValue());
+        assertThat(response.getStatusCode(), is("404"));
+
+        verify(client, never()).updateAllProducts(captor.capture());
+    }
+
+    @Test
+    public void testInventoryDeleteFunctionError() {
+        Context ctx = createContext();
+
+		request.setPathParameters(Collections.singletonMap("id", "101"));
 		when(client.updateAllProducts(anyListOf(Product.class))).thenReturn(false);
 
 		HttpProductResponse response = handler.handleRequest(request, ctx);
+
         assertThat(response.getBody(), nullValue());
         assertThat(response.getStatusCode(), is("500"));
 
@@ -98,6 +110,6 @@ public class InventoryInsertFunctionTest extends TestHelper {
         List<Product> updatedProducts = captor.getValue();
 
         assertThat(updatedProducts, 
-				contains(product100, product101, product102, product103, product104, newProduct105));
+				contains(product100, product102, product103, product104));
     }
 }

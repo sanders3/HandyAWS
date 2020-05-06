@@ -2,6 +2,7 @@ package com.handy.aws.functions;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +29,7 @@ public class InventoryFindFunctionTest extends TestHelper {
 	
 	private InventoryFindFunction handler;
 
-	private QueryStringRequest input = new QueryStringRequest();
+	private QueryStringRequest request = new QueryStringRequest();
 
 	@Before
 	public void setupClient() throws IOException {
@@ -49,8 +50,8 @@ public class InventoryFindFunctionTest extends TestHelper {
 	public void testInventoryFindFunction102() {
 		Context ctx = createContext();
 
-		input.setQueryStringParameters(Collections.singletonMap("id", "102"));
-		HttpProductResponse response = handler.handleRequest(input, ctx);
+		request.setQueryStringParameters(Collections.singletonMap("id", "102"));
+		HttpProductResponse response = handler.handleRequest(request, ctx);
 
 		Gson gson = new Gson();
 		assertThat(response.getStatusCode(), is("200"));
@@ -61,11 +62,24 @@ public class InventoryFindFunctionTest extends TestHelper {
 	}
 
 	@Test
+	public void testInventoryFindFunctionNotFound() {
+		Context ctx = createContext();
+
+		request.setQueryStringParameters(Collections.singletonMap("id", "99"));
+		HttpProductResponse response = handler.handleRequest(request, ctx);
+
+		assertThat(response.getStatusCode(), is("404"));
+		assertThat(response.getHeaders(), hasEntry("Content-Type", "application/json"));
+
+		assertThat(response.getBody(), nullValue());
+	}
+
+	@Test
 	public void testInventoryFindFunctionAll() {
 		Context ctx = createContext();
 
-		input.setQueryStringParameters(Collections.singletonMap("id", "all"));
-		HttpProductResponse response = handler.handleRequest(input, ctx);
+		request.setQueryStringParameters(Collections.singletonMap("id", "all"));
+		HttpProductResponse response = handler.handleRequest(request, ctx);
 
 		Gson gson = new Gson();
 		assertThat(response.getStatusCode(), is("200"));
