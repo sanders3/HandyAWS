@@ -1,80 +1,85 @@
 package com.handy.aws.functions;
 
-import static com.handy.aws.functions.InventoryFindFunction.BUCKET_NAME;
-import static com.handy.aws.functions.InventoryFindFunction.KEY_NAME;
-
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import com.adobe.testing.s3mock.junit4.S3MockRule;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
-
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 /**
  * A simple test harness for locally invoking your Lambda function handler.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class InventoryFindFunctionTest {
 
+	private static Product product100 = new Product(100, "Hammer", "Stanley", "5oz Magnetic Tack Hammer", 20);
+	private static Product product101 = new Product(101, "Hammer", "Wilton Bash", "24oz Ball Peen", 27);
+	private static Product product102 = new Product(102, "Hammer", "DeWalt", "15oz MIG Weld", 14);
+	private static Product product103 = new Product(103, "Hammer", "Crescent", "18 oz Pry Bar Hammer", 32);
+	private static Product product104 = new Product(104,"Hammer", "DeWalt", "22 oz Mason Hammer", 7);
 
-	@ClassRule
-	public static final S3MockRule s3mock = S3MockRule.builder().build();
+	private static Product[] products = { product100, product101, product102, product103, product104 };
 
-	private static QueryStringRequest input = new QueryStringRequest();
+	@Mock
+	private InventoryS3Client client;
+	
+	private InventoryFindFunction handler;
 
-	@BeforeClass
-	public static void createInput() throws IOException {
-		input.setQueryStringParameters(Collections.singletonMap("id", "102"));
-	}
-
-	private final File uploadFile = new File("src/test/resources", KEY_NAME);
-
-	private final Product expectedProduct = new Product(102, "Hammer", "DeWalt", "15oz MIG Weld", 14);
+	private QueryStringRequest input = new QueryStringRequest();
 
 	@Before
-	public void setupS3Client() {
-		S3Client s3client = s3mock.createS3ClientV2();
-		s3client.createBucket(CreateBucketRequest.builder().bucket(BUCKET_NAME).build());
-		s3client.putObject(
-				PutObjectRequest.builder().bucket(BUCKET_NAME).key(KEY_NAME).build(),
-				uploadFile.toPath());
+	public void setupClient() throws IOException {
+		handler = new InventoryFindFunction(client);
+		when(client.getAllProducts()).thenReturn(products);
 	}
 
 	private Context createContext() {
 		TestContext ctx = new TestContext();
 
 		// TODO: customize your context here if needed.
-		ctx.setFunctionName("Your Function Name");
+		ctx.setFunctionName("InventoryFindFunction");
 
 		return ctx;
 	}
 
 	@Test
-	public void testInventoryFindFunction() {
-		InventoryFindFunction handler = new InventoryFindFunction() {
-			protected software.amazon.awssdk.services.s3.S3Client getS3Client() {
-				return s3mock.createS3ClientV2();
-			};
-		};
-
+	public void testInventoryFindFunction102() {
 		Context ctx = createContext();
 
+		input.setQueryStringParameters(Collections.singletonMap("id", "102"));
 		HttpProductResponse response = handler.handleRequest(input, ctx);
 
 		Gson gson = new Gson();
-		String expectedResponse = gson.toJson(expectedProduct);
+		assertThat(response.getStatusCode(), is("200"));
+		assertThat(response.getHeaders(), hasEntry("Content-Type", "application/json"));
+
+		String expectedResponse = gson.toJson(product102);
+		assertThat(response.getBody(), is(expectedResponse));
+	}
+
+	@Test
+	public void testInventoryFindFunctionAll() {
+		Context ctx = createContext();
+
+		input.setQueryStringParameters(Collections.singletonMap("id", "all"));
+		HttpProductResponse response = handler.handleRequest(input, ctx);
+
+		Gson gson = new Gson();
+		assertThat(response.getStatusCode(), is("200"));
+		assertThat(response.getHeaders(), hasEntry("Content-Type", "application/json"));
+
+		String expectedResponse = gson.toJson(products);
 		assertThat(response.getBody(), is(expectedResponse));
 	}
 }

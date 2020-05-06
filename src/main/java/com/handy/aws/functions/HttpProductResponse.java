@@ -9,7 +9,7 @@ public class HttpProductResponse {
 
 	private String body;
 
-	private String statusCode;
+	private String statusCode = "200";
 
 	private Map<String, String> headers = new HashMap<>();
 
@@ -21,6 +21,12 @@ public class HttpProductResponse {
 		this();
 		Gson gson = new Gson();
 		body = gson.toJson(product);
+	}
+
+	public HttpProductResponse(Product[] products) {
+		this();
+		Gson gson = new Gson();
+		body = gson.toJson(products);
 	}
 
 	public String getBody() {
